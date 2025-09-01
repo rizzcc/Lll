@@ -1,0 +1,1 @@
+$nomention $addCmdReactions[❌] $deleteIn[10s] $botTyping $reply $onlyIf[$checkContains[$toLowercase[$message[1]];buralara bottaki Komutları yazın prefixi olmadan Daha Fazla Eklemek İsterseniz Aralarına Noktalı Virgül Koyun :;seçim;yardım;sunucu-bilgi;]==false;] $title[BİR SORUN VAR] $description[ **BOTTA** ``$message`` **KOMUTU BULUNAMADI LÜTFEN DOĞRU YAZDIĞINIZA EMİN OLUN. **] 

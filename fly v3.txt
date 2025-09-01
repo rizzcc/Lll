@@ -1,0 +1,182 @@
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local TextButton = Instance.new("TextButton")
+local SpeedIcon = Instance.new("ImageButton")
+local SpeedFrame = Instance.new("Frame")
+local SpeedTextBox = Instance.new("TextBox")
+local OwnerLabel = Instance.new("TextLabel")
+local IsFlying = false
+local flyv
+local flyg
+local Player = game.Players.LocalPlayer
+local Speed = 100
+local LastSpeed = Speed
+local IsRunning = false
+local f = 1
+
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ResetOnSpawn = true
+
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.new(0, 0, 0)
+Frame.BorderColor3 = Color3.new(0.67451, 0.211765, 0.152941)
+Frame.Position = UDim2.new(0.293, 0, 0.492, 0)
+Frame.Size = UDim2.new(0.2, 0, 0.2, 0)
+Frame.Active = true
+Frame.Draggable = true
+Frame.BorderSizePixel = 0
+Frame.BackgroundTransparency = 0.5
+Frame.Visible = true
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 12)
+UICorner.Parent = Frame
+
+TextButton.Parent = Frame
+TextButton.BackgroundColor3 = Color3.new(1, 1, 1)
+TextButton.BackgroundTransparency = 0.8
+TextButton.Position = UDim2.new(0.1, 0, 0.2, 0)
+TextButton.Size = UDim2.new(0.8, 0, 0.6, 0)
+TextButton.Font = Enum.Font.SourceSansLight
+TextButton.FontSize = Enum.FontSize.Size14
+TextButton.Text = "Painboi Fly Script! (Ölürseniz Kodu Yeniden Çalıştırın)"
+TextButton.TextScaled = true
+TextButton.TextSize = 8
+TextButton.TextWrapped = true
+
+local TextButtonCorner = Instance.new("UICorner")
+TextButtonCorner.CornerRadius = UDim.new(0, 12)
+TextButtonCorner.Parent = TextButton
+
+SpeedIcon.Parent = Frame
+SpeedIcon.BackgroundTransparency = 1
+SpeedIcon.Image = "rbxassetid://6031280882"  -- Example icon asset
+SpeedIcon.Position = UDim2.new(0, 5, 0, 5)
+SpeedIcon.Size = UDim2.new(0, 30, 0, 30)
+SpeedIcon.Visible = true
+
+SpeedFrame.Parent = ScreenGui
+SpeedFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+SpeedFrame.Position = UDim2.new(1, 0, 0.4, 0)
+SpeedFrame.Size = UDim2.new(0.2, 0, 0.2, 0)
+SpeedFrame.Visible = false
+SpeedFrame.BackgroundTransparency = 0.5
+
+UICorner:Clone().Parent = SpeedFrame
+
+SpeedTextBox.Parent = SpeedFrame
+SpeedTextBox.BackgroundColor3 = Color3.new(1, 1, 1)
+SpeedTextBox.Position = UDim2.new(0.1, 0, 0.3, 0)
+SpeedTextBox.Size = UDim2.new(0.8, 0, 0.4, 0)
+SpeedTextBox.Font = Enum.Font.SourceSansBold
+SpeedTextBox.PlaceholderText = "Fly Speed"
+SpeedTextBox.PlaceholderColor3 = Color3.new(0.7, 0.7, 0.7)
+SpeedTextBox.Text = ""
+SpeedTextBox.TextColor3 = Color3.new(0, 0, 0)
+SpeedTextBox.TextScaled = true
+SpeedTextBox.TextSize = 14
+SpeedTextBox.TextWrapped = true
+SpeedTextBox.ClearTextOnFocus = false
+
+local SpeedTextBoxCorner = Instance.new("UICorner")
+SpeedTextBoxCorner.CornerRadius = UDim.new(0, 12)
+SpeedTextBoxCorner.Parent = SpeedTextBox
+
+local function toggleSpeedGui()
+    if SpeedFrame.Visible then
+        SpeedFrame:TweenPosition(UDim2.new(1, 0, 0.4, 0), "Out", "Quad", 0.5, true, function()
+            SpeedFrame.Visible = false
+        end)
+    else
+        SpeedFrame.Visible = true
+        SpeedFrame:TweenPosition(UDim2.new(0.7, 0, 0.4, 0), "Out", "Quad", 0.5, true)
+    end
+end
+
+SpeedIcon.MouseButton1Click:connect(toggleSpeedGui)
+
+local function updateSpeed()
+    local newSpeed = tonumber(SpeedTextBox.Text)
+    if newSpeed then
+        Speed = newSpeed
+        LastSpeed = newSpeed
+    end
+end
+
+SpeedTextBox.FocusLost:connect(updateSpeed)
+
+TextButton.MouseButton1Click:connect(function()
+    if IsFlying then
+        IsFlying = false
+        flyv:Destroy()
+        flyg:Destroy()
+        TextButton.Text = "❌ Fly Kapalı"
+        TextButton.TextColor3 = Color3.fromRGB(255, 0, 0)
+        Player.Character:WaitForChild('Humanoid').PlatformStand = false
+    else
+        IsFlying = true
+        flyv = Instance.new("BodyVelocity")
+        flyv.Parent = Player.Character:FindFirstChild('Torso') or Player.Character:FindFirstChild('UpperTorso')
+        flyv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+
+        flyg = Instance.new("BodyGyro")
+        flyg.Parent = Player.Character:FindFirstChild('Torso') or Player.Character:FindFirstChild('UpperTorso')
+        flyg.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
+        flyg.P = 1000
+        flyg.D = 50
+        TextButton.Text = "✈️ Fly Açık"
+        TextButton.TextColor3 = Color3.fromRGB(0, 255, 0)
+        Player.Character:WaitForChild('Humanoid').PlatformStand = true
+    end
+end)
+
+spawn(function()
+    while true do
+        wait()
+        if IsFlying then
+            flyg.CFrame = workspace.CurrentCamera.CFrame * CFrame.Angles(-math.rad((f + 0) * 50 * Speed), 0, 0)
+            flyv.Velocity = workspace.CurrentCamera.CFrame.LookVector * Speed
+        else
+            f = 0
+        end
+        if IsRunning then
+            Speed = LastSpeed
+        else
+            if not Speed == 0 then
+                LastSpeed = Speed
+            end
+            Speed = 0
+        end
+    end
+end)
+
+Player.Character.Humanoid.Changed:Connect(function()
+    if Player.Character.Humanoid.Health == 0 then
+        if IsFlying then
+            IsFlying = false
+            flyg:Destroy()
+            flyv:Destroy()
+            TextButton.Text = "Scriptin Sahibi Painboi"
+            TextButton.TextColor3 = Color3.fromRGB(255, 0, 0)
+            wait(6)
+            ScreenGui:Destroy()
+        end
+    end
+end)
+
+Player.Character.Humanoid.Changed:Connect(function(detector)
+    if Player.Character.Humanoid.Health == 0 then
+        TextButton.Text = "Öldün, Script Tekrar Çalıştır"
+        TextButton.TextColor3 = Color3.fromRGB(255, 0, 0)
+        wait(6)
+        ScreenGui:Destroy()
+    end
+end)
+
+Player.Character.Humanoid.Changed:Connect(function(Prop)
+    if Player.Character.Humanoid.MoveDirection == Vector3.new(0, 0, 0) then
+        IsRunning = false
+    else
+        IsRunning = true
+    end
+end)

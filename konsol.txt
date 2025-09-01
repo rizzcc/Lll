@@ -1,0 +1,10 @@
+local VirtualInputManager = game:GetService("VirtualInputManager")
+warn([[
+Script Creator By L2vy
+]])
+VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, game)
+task.wait(0.1)
+VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, game)
+if setclipboard then 
+	pcall(setclipboard, "https://discord.com/users/1091010132567146626")
+end

@@ -1,0 +1,45 @@
+$nomention 
+$if[$getVar[para;$authorID]<150000]
+$onlyIf[$getVar[para;$authorID]>0;Paran Yok Knk]
+$if[$replaceText[$replaceText[$randomText[1;2];1;1;100];2;2;150]==1]
+<@$authorID> `$numberSeparator[$getVar[para;$authorID];.]` yatırdı, para dönüyor... 
+$editIn[4s;<@$authorID> `$numberSeparator[$getVar[para;$authorID];.]` yatırdı, para dönüyor... ve kazandın `$numberSeparator[$sum[$getVar[para;$authorID];$getVar[para;$authorID]];.]`!!]
+$setVar[para;$sum[$getVar[para;$authorID];$getVar[para;$authorID]];$authorID]
+$else
+<@$authorID> `$numberSeparator[$getVar[para;$authorID];.]` yatırdı, para dönüyor... 
+$editIn[4s;<@$authorID> `$numberSeparator[$getVar[para;$authorID];.]` yatırdı, para dönüyor... ve kaybettin :c]
+$setVar[para;$sub[$getVar[para;$authorID];$getVar[para;$authorID]];$authorID]
+$endif
+$changeCooldownTime[gün;saat;dakika;saniye]
+$globalCooldown[3s;:alarm_clock: <@$authorID> bu komutu kullanmak için __%time-s%__ beklemelisin.]
+$endif
+
+$if[$getVar[para;$authorID]>150000]
+$onlyIf[$getVar[para;$authorID]>0;Paran Yok Knk]
+$if[$replaceText[$replaceText[$randomText[1;2];1;1;100];2;2;150]==1]
+<@$authorID> `$numberSeparator[150000;.]` yatırdı, para dönüyor... 
+$editIn[4s;<@$authorID> `$numberSeparator[150000;.]` yatırdı, para dönüyor... ve kazandın `$numberSeparator[$sum[150000;150000];.]`!!]
+$setVar[para;$sum[$getVar[para;$authorID];150000];$authorID]
+$else
+<@$authorID> `$numberSeparator[150000;.]` yatırdı, para dönüyor... 
+$editIn[4s;<@$authorID> `$numberSeparator[150000;.]` yatırdı, para dönüyor... ve kaybettin :c]
+$setVar[para;$sub[$getVar[para;$authorID];150000];$authorID]
+$endif
+$changeCooldownTime[gün;saat;dakika;saniye]
+$globalCooldown[3s;:alarm_clock: <@$authorID> bu komutu kullanmak için __%time-s%__ beklemelisin.]
+$endif
+
+$if[$getVar[para;$authorID]==150000]
+$onlyIf[$getVar[para;$authorID]>0;Paran Yok Knk]
+$if[$replaceText[$replaceText[$randomText[1;2];1;1;100];2;2;150]==1]
+<@$authorID> `$numberSeparator[150000;.]` yatırdı, para dönüyor... 
+$editIn[4s;<@$authorID> `$numberSeparator[150000;.]` yatırdı, para dönüyor... ve kazandın `$numberSeparator[$sum[150000;150000];.]`!!]
+$setVar[para;$sum[$getVar[para;$authorID];150000];$authorID]
+$else
+<@$authorID> `$numberSeparator[150000;.]` yatırdı, para dönüyor... 
+$editIn[4s;<@$authorID> `$numberSeparator[150000;.]` yatırdı, para dönüyor... ve kaybettin :c]
+$setVar[para;$sub[$getVar[para;$authorID];150000];$authorID]
+$endif
+$changeCooldownTime[gün;saat;dakika;saniye]
+$globalCooldown[3s;:alarm_clock: <@$authorID> bu komutu kullanmak için __%time-s%__ beklemelisin.]
+$endif

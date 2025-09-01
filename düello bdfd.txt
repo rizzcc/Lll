@@ -1,0 +1,197 @@
+Prefix[düello] 
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+$nomention
+$nomention
+$if[$findUser[$message]==$botID]
+benimle dövüşemezsin
+$elseif[$isBot[$findUser[$message]]==true]
+Botlarla savaşamazsın
+$elseif[$and[$findUser[$message;no]==;$message!=]==true]
+“$message” isimli bir kullanıcı bulamadım.
+$elseif[$findUser[$message;no]==]
+kiminle dövüşmek istersin
+$elseif[$authorID==$findUser[$message]]
+kendinle savaşamazsın
+$else
+$description[**$username**
+🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥**   **`100%`
+
+**$username[$findUser[$message]]**
+🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥**   **`100%`
+
+Bir Kavga Başladı.]
+$footer[Şu anda sıra $username'de]
+$color[ffff00]
+$setUserVar[fighter1;$authorID]
+$setUserVar[fighter2;$findUser[$message]]
+$setUserVar[fighter1;$authorID;$findUser[$message]]
+$setUserVar[fighter2;$findUser[$message];$findUser[$message]]
+$setUserVar[health;100]
+$setUserVar[health;100;$findUser[$message]]
+$addButton[no;punch-$authorID;Yumruk;success]
+$addButton[no;kick-$authorID;Atmak;success]
+$addButton[no;runaway-$authorID-$findUser[$message];Kaçmak;danger]
+$endif
+
+$onInteraction
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+$nomention
+$nomention
+$if[$customID==punch-$authorID]
+$nomention
+$enableDecimals[yes]
+$async[user]
+$if[$getUserVar[fighter1]==$authorID]
+1
+$else
+2
+$endif
+$endasync
+$async[opponent]
+$if[$getUserVar[fighter1]==$authorID]
+2
+$else
+1 
+$endif
+$endasync
+$setUserVar[health;$sub[$getUserVar[health;$getUserVar[fighter$trimSpace[$await[opponent]]]];5];$getUserVar[fighter$trimSpace[$await[opponent]]]]
+$if[$getUserVar[health;$getUserVar[fighter$trimSpace[$await[opponent]]]]<=0]
+$if[$trimSpace[$await[opponent]]==1]
+$description[$username[$getUserVar[fighter1]]
+$repeatMessage[10;⬛️]**   **`0%`
+
+$username[$getUserVar[fighter2]]
+$replaceText[$repeatMessage[10;⬛️];⬛️;🟥;$round[$divide[$getUserVar[health;$getUserVar[fighter2]];10]]]**   **`$round[$getUserVar[health;$getUserVar[fighter2]];0]%`
+
+$username[$getUserVar[fighter$trimSpace[$await[opponent]]]] $randomText[yıkıldı;yok edildi;yok edildi;yıkıldı;parçalandı]!]
+$editButton[punch-$getUserVar[fighter1];Yumruk;success;yes]
+$editButton[kick-$getUserVar[fighter1];Tekme atmak;success;yes]
+$editButton[punch-$getUserVar[fighter2];Yumruk;success;yes]
+$editButton[kick-$getUserVar[fighter2];Tekme Atmak;success;yes]
+$editButton[runaway-$getUserVar[fighter1]-$getUserVar[fighter2];Kaçmak;danger;yes]
+$else
+$description[$username[$getUserVar[fighter1]]
+$replaceText[$repeatMessage[10;⬛️];⬛️;🟥;$round[$divide[$getUserVar[health;$getUserVar[fighter1]];10]]]**   **`$round[$getUserVar[health;$getUserVar[fighter1]];0]%`
+
+$username[$getUserVar[fighter2]]
+$repeatMessage[10;⬛️]**   **`0%`
+
+$username[$getUserVar[fighter$trimSpace[$await[opponent]]]], $randomText[yıkıldı;yok edildi;yok edildi;yıkıldı;parçalandı]!]
+$editButton[punch-$getUserVar[fighter1];Yumruk;success;yes]
+$editButton[kick-$getUserVar[fighter1];Teklme Atmak;success;yes]
+$editButton[punch-$getUserVar[fighter2];Yumruk;success;yes]
+$editButton[kick-$getUserVar[fighter2];Tekme Atmak;success;yes]
+$editButton[runaway-$getUserVar[fighter1]-$getUserVar[fighter2];Run Away;danger;yes]
+$endif
+$footer[$username Kazandı:]
+$color[ffff00]
+$else
+$description[$username[$getUserVar[fighter1]]
+$replaceText[$repeatMessage[10;⬛️];⬛️;🟥;$round[$divide[$getUserVar[health;$getUserVar[fighter1]];10]]]**   **`$round[$getUserVar[health;$getUserVar[fighter1]];0]%`
+
+$username[$getUserVar[fighter2]]
+$replaceText[$repeatMessage[10;⬛️];⬛️;🟥;$round[$divide[$getUserVar[health;$getUserVar[fighter2]];10]]]**   **`$round[$getUserVar[health;$getUserVar[fighter2]];0]%`
+
+$username $username[$getUserVar[fighter$trimSpace[$await[opponent]]]]'i yumrukladı ve 5 hasar verdi]
+$footer[Şu anda $username[$getUserVar[fighter$trimSpace[$await[opponent]]]]'in sırası]
+$color[ffff00]
+$removeButtons
+$addButton[no;punch-$getUserVar[fighter$trimSpace[$await[opponent]]];Yumruk;success]
+$addButton[no;kick-$getUserVar[fighter$trimSpace[$await[opponent]]];Tekme At;success]
+$addButton[no;runaway-$authorID-$findUser[$message];Kaçmak;danger]
+$endif
+$elseif[$customID==kick-$authorID]
+$enableDecimals[yes]
+$nomention
+$async[user]
+$if[$getUserVar[fighter1]==$authorID]
+1
+$else
+2
+$endif
+$endasync
+$async[opponent]
+$if[$getUserVar[fighter1]==$authorID]
+2
+$else
+1
+$endif
+$endasync
+$if[$random[1;5]==1]
+$setUserVar[health;$sub[$getUserVar[health;$getUserVar[fighter$trimSpace[$await[user]]]];$random[3;26]];$getUserVar[fighter$trimSpace[$await[user]]]]
+$var[message;$username, $username[$getUserVar[fighter$trimSpace[$await[opponent]]]]'i tekmeledi ama düştü! $username bu süreçte $round[$random[3;26]] ​​hasar aldı]
+$else
+$setUserVar[health;$sub[$getUserVar[health;$getUserVar[fighter$trimSpace[$await[opponent]]]];$random[3;41]];$getUserVar[fighter$trimSpace[$await[opponent]]]]
+$var[message;$username, $username[$getUserVar[fighter$trimSpace[$await[opponent]]]]'i tekmeledi ve $round[$random[3;41]] hasar verdi]
+$endif
+$if[$getUserVar[health;$getUserVar[fighter$trimSpace[$await[opponent]]]]<=0]
+$if[$trimSpace[$await[opponent]]==1]
+$description[$username[$getUserVar[fighter1]]
+$repeatMessage[10;⬛️]**   **`0%`
+
+$username[$getUserVar[fighter2]]
+$replaceText[$repeatMessage[10;⬛️];⬛️;🟥;$round[$divide[$getUserVar[health;$getUserVar[fighter2]];10]]]**   **`$round[$getUserVar[health;$getUserVar[fighter2]];0]%`
+
+$username[$getUserVar[fighter$trimSpace[$await[opponent]]]] $randomText[yıkıldı;yok edildi;yok edildi;yıkıldı;parçalandı]!]
+$editButton[punch-$getUserVar[fighter1];Yumruk;success;yes]
+$editButton[kick-$getUserVar[fighter1];Tekme At;success;yes]
+$editButton[punch-$getUserVar[fighter2];Yumruk;success;yes]
+$editButton[kick-$getUserVar[fighter2];Tekme At;success;yes]
+$editButton[runaway-$getUserVar[fighter1]-$getUserVar[fighter2];Kaçmak;danger;yes]
+$else
+$description[$username[$getUserVar[fighter1]]
+$replaceText[$repeatMessage[10;⬛️];⬛️;🟥;$round[$divide[$getUserVar[health;$getUserVar[fighter1]];10]]]**   **`$round[$getUserVar[health;$getUserVar[fighter1]];0]%`
+
+$username[$getUserVar[fighter2]]
+$repeatMessage[10;⬛️]**   **`0%`
+
+$username[$getUserVar[fighter$trimSpace[$await[opponent]]]] $randomText[yıkıldı;yok edildi;yok edildi;yıkıldı;parçalandı]!]
+$editButton[punch-$getUserVar[fighter1];Yumruk;success;yes]
+$editButton[kick-$getUserVar[fighter1];Tekme At;success;yes]
+$editButton[punch-$getUserVar[fighter2];Yumruk;success;yes]
+$editButton[kick-$getUserVar[fighter2];Tekme At;success;yes]
+$editButton[runaway-$getUserVar[fighter1]-$getUserVar[fighter2];Kaçmak;danger;yes]
+$endif
+$footer[$username won]
+$color[ffff00]
+$else
+$description[$username[$getUserVar[fighter1]]
+$replaceText[$repeatMessage[10;⬛️];⬛️;🟥;$round[$divide[$getUserVar[health;$getUserVar[fighter1]];10]]]**   **`$round[$getUserVar[health;$getUserVar[fighter1]];0]%`
+
+$username[$getUserVar[fighter2]]
+$replaceText[$repeatMessage[10;⬛️];⬛️;🟥;$round[$divide[$getUserVar[health;$getUserVar[fighter2]];10]]]**   **`$round[$getUserVar[health;$getUserVar[fighter2]];0]%`
+
+$var[message]]
+$footer[Şu anda $username[$getUserVar[fighter$trimSpace[$await[opponent]]]]'in sırası]
+$color[ffff00]
+$removeButtons
+$addButton[no;punch-$getUserVar[fighter$trimSpace[$await[opponent]]];Yumruk;success]
+$addButton[no;kick-$getUserVar[fighter$trimSpace[$await[opponent]]];Tekme At;success]
+$addButton[no;runaway-$authorID-$findUser[$message];Kaçmak;danger]
+$endif
+$elseif[$and[$checkContains[$customID;runaway]==true;$checkContains[$customID;$authorID]==true]==true]
+$nomention
+$description[$username[$getUserVar[fighter1]]
+$replaceText[$repeatMessage[10;⬛️];⬛️;🟥;$round[$divide[$getUserVar[health;$getUserVar[fighter1]];10]]]**   **`$round[$getUserVar[health;$getUserVar[fighter1]];0]%`
+
+$username[$getUserVar[fighter2]]
+$replaceText[$repeatMessage[10;⬛️];⬛️;🟥;$round[$divide[$getUserVar[health;$getUserVar[fighter2]];10]]]**   **`$round[$getUserVar[health;$getUserVar[fighter2]];0]%`
+
+$username kaçtı!]
+$footer[Ne salak]
+$color[ffff00]
+$editButton[punch-$getUserVar[fighter1];Yumruk;success;yes]
+$editButton[kick-$getUserVar[fighter1];Tekme At;success;yes]
+$editButton[punch-$getUserVar[fighter2];Yumruk;success;yes]
+$editButton[kick-$getUserVar[fighter2];Tekme At;success;yes]
+$editButton[$customID;Kaçmak;danger;yes]
+$elseif[$checkContains[$customID;runaway;punch;kick]==true]
+$nomention
+$ephemeral
+$removeButtons
+Sıra Sende Değil! 
+$endif

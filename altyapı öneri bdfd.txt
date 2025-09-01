@@ -1,0 +1,87 @@
+$nomention
+$deletecommand
+$if[$and[$isAdmin[$authorID]==true;$mentionedChannels[1]==]==true]
+$description[🔴 | **hata**, *hiçbir kanaldan bahsedilmedi.*]
+$color[2F3136]
+$elseif[$and[$isAdmin[$authorID]==true;$mentionedChannels[1]!=]==true]
+$description[*🟢 | öneriler şurada yayınlanacak  <#$mentionedChannels[1]> !*]
+$color[2F3136]
+$setServerVar[suggchannel;$mentionedChannels[1]]
+$endif
+$if[$isAdmin[$authorID]==false]
+$color[2F3136]
+$ephemeral
+$description[🔴 | **Hata**, *yönetici izinleriniz yok !*]
+$endif
+```
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+**$onInteraction**
+
+```
+$onlyIf[$checkContains[$customID;ansed]==true;]
+$textSplit[$customID;@]
+ 
+$editMessage[$channelID;$splitText[2];;$getEmbedData[$channelID;$splitText[2];1;title];$getEmbedData[$channelID;$splitText[2];1;description]
+ 
+**$username tarafından yanıtlandı**
+$input[ans];ff8888;]
+$editButton[answer;Answered;primary;yes;;$splitText[2]]
+```
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+**suggest**
+```
+$nomention
+$sendMessage[:green_circle: | **suggest**, *istekler başarıyla gönderildiistekler başarıyla gönderildi!*]
+ 
+$if[$getServerVar[suggchannel]!=]
+ 
+$useChannel[$getServerVar[suggchannel]]
+$color[00ff00]
+$title[$username'den öneri]
+$description[
+**Öneri:**
+`ms
+$message[1;msg]
+
+**Tepki:**
+:green_circle: Evet
+:orange_circle: neden
+:red_circle: Hayır]
+$addReactions[:yellow_circle:;:orange_circle:;:red_circle:]
+$addButton[yes;answer;Answer;primary;no;;]
+$addButton[no;thread;Create Thread;secondary;no;;]
+$else
+$ephemeral
+$description[:red_circle: | **Hata**, *sunucuda tanımlanmış öneri kanalı yoksunucuda tanımlanmış öneri kanalı yok*]
+$color[00ff00]
+$endif
+```
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+$onInteraction[theard]
+```
+$nomention
+$title[$getEmbedData[$channelID;$messageID;1;title]]
+$description[$getEmbedData[$channelID;$messageID;1;description]]
+$var[id;$startThread[Öneri Yorumlar;$channelID;$messageID;10080;yes]]
+$removeComponent[$customID]
+```
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+**$onInteraction[answer]**
+
+
+```
+$nomention
+ 
+$if[$isAdmin[$authorID]]
+$newModal[ansed@$messageID;Title]
+$addTextInput[ans;paragraph;Burada CevaplaBurada Cevapla;1;2000;yes;;]
+$else
+$ephemeral
+$color[00ffff]
+$description[🔴 | **Hata**, *yönetici izinleriniz yok!*]
+$removeButtons
+$endif

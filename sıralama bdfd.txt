@@ -1,0 +1,20 @@
+$nomention
+$suppressErrors[Hata Var Sıralamanızda 10 Kişi Yoksa Hata Verir.]
+$author[$username#$discriminator[$botID] - Para Sıralama]
+$authorIcon[$userAvatar[$botID]]
+$color[FFFF20]
+$description[
+🥇 - $username[$getLeaderboardValue[globalUser;para;asc;1;id]] - $numberSeparator[$getLeaderboardValue[globalUser;para;asc;1;value]]
+🥈 - $username[$getLeaderboardValue[globalUser;para;asc;2;id]] - $numberSeparator[$getLeaderboardValue[globalUser;para;asc;2;value]]
+🥉 - $username[$getLeaderboardValue[globalUser;para;asc;3;id]] - $numberSeparator[$getLeaderboardValue[globalUser;para;asc;3;value]]
+🏅 - $username[$getLeaderboardValue[globalUser;para;asc;4;id]] - $numberSeparator[$getLeaderboardValue[globalUser;para;asc;4;value]]
+🏅 - $username[$getLeaderboardValue[globalUser;para;asc;5;id]] - $numberSeparator[$getLeaderboardValue[globalUser;para;asc;5;value]]
+🏅 - $username[$getLeaderboardValue[globalUser;para;asc;6;id]] - $numberSeparator[$getLeaderboardValue[globalUser;para;asc;6;value]]
+🏅 - $username[$getLeaderboardValue[globalUser;para;asc;7;id]] - $numberSeparator[$getLeaderboardValue[globalUser;para;asc;7;value]]
+🏅 - $username[$getLeaderboardValue[globalUser;para;asc;8;id]] - $numberSeparator[$getLeaderboardValue[globalUser;para;asc;8;value]]
+🏅 - $username[$getLeaderboardValue[globalUser;para;asc;9;id]] - $numberSeparator[$getLeaderboardValue[globalUser;para;asc;9;value]]
+🏅 - $username[$getLeaderboardValue[globalUser;para;asc;10;id]] - $numberSeparator[$getLeaderboardValue[globalUser;para;asc;10;value]]
+]
+$footer[$username#$discriminator[$authorID] Tarafından İstendi]
+$footerIcon[$authorAvatar]
+$addTimestamp
