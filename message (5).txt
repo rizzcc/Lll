@@ -1,0 +1,100 @@
+local configs = { -- main aimlock settings
+    Main = {
+        Enabled = true,
+        Aimlockkey = "q",
+        Prediction = 0.11621,
+        Aimpart = 'HumanoidRootPart', -- Head, UpperTorso, HumanoidRootPart, LowerTorso
+        Notifications = false
+
+    },
+    Tracer = {
+        TracerThickness = 3.5,
+        TracerTransparency = 1,
+        TracerColor = Color3.fromRGB(153, 50, 204)
+    }
+}
+
+local CurrentCamera = game:GetService("Workspace").CurrentCamera
+local Inset = game:GetService("GuiService"):GetGuiInset().Y
+local RunService = game:GetService("RunService")
+local Mouse = game.Players.LocalPlayer:GetMouse()
+local LocalPlayer = game.Players.LocalPlayer
+local Line = Drawing.new("Line")
+local Plr
+
+Mouse.KeyDown:Connect(function(KeyPressed)
+    if KeyPressed == (configs.Main.Aimlockkey) then
+        if configs.Main.Enabled == true then
+            configs.Main.Enabled = false
+            if configs.Main.Notifications == true then
+                Plr = FindClosestPlayer()
+                game.StarterGui:SetCore("SendNotification", {
+                    Title = "Private",
+                    Text = "Unlocked"
+                })
+            end
+        else
+            Plr = FindClosestPlayer()
+            configs.Main.Enabled = true
+            if configs.Main.Notifications == true then
+                game.StarterGui:SetCore("SendNotification", {
+                    Title = "Private",
+                    Text = "Locked On :  " .. tostring(Plr.Character.Humanoid.DisplayName)
+                })
+            end
+        end
+    end
+end)
+
+function FindClosestPlayer()
+    local ClosestDistance, ClosestPlayer = math.huge, nil;
+    for _, Player in next, game:GetService("Players"):GetPlayers() do
+        if Player ~= LocalPlayer then
+            local Character = Player.Character
+            if Character and Character.Humanoid.Health > 1 then
+                local Position, IsVisibleOnViewPort = CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart
+                                                                                             .Position)
+                if IsVisibleOnViewPort then
+                    local Distance = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Position.X, Position.Y)).Magnitude
+                    if Distance < ClosestDistance then
+                        ClosestPlayer = Player
+                        ClosestDistance = Distance
+                    end
+                end
+            end
+        end
+    end
+    return ClosestPlayer, ClosestDistance
+end
+
+RunService.Stepped:connect(function()
+    if configs.Main.Enabled == true then
+        local Vector = CurrentCamera:WorldToViewportPoint(Plr.Character[configs.Main.Aimpart].Position +
+                                                              (Plr.Character.HumanoidRootPart.Velocity *
+                                                                  configs.Main.Prediction))
+        Line.Color = configs.Tracer.TracerColor
+        Line.Thickness = configs.Tracer.TracerThickness
+        Line.Transparency = configs.Tracer.TracerTransparency
+
+        Line.From = Vector2.new(Mouse.X, Mouse.Y + Inset)
+        Line.To = Vector2.new(Vector.X, Vector.Y)
+        Line.Visible = true
+    else
+        Line.Visible = false
+
+    end
+end)
+
+local mt = getrawmetatable(game)
+local old = mt.__namecall
+setreadonly(mt, false)
+mt.__namecall = newcclosure(function(...)
+    local args = {...}
+    if configs.Main.Enabled and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
+        args[3] = Plr.Character[configs.Main.Aimpart].Position +
+                      (Plr.Character[configs.Main.Aimpart].Velocity * configs.Main.Prediction)
+
+        return old(unpack(args))
+    end
+    return old(...)
+end)

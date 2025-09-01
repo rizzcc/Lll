@@ -1,0 +1,62 @@
+--[[
+
+ticxyylolz#9164's Stand script to get started in "Owner" put the username you want to control them
+
+Example:
+getgenv().Owner =  {
+    ["Owner"] = "YourUserNamehere"
+}
+
+]]
+
+--AND DO NOT REPLACE ["Owner"] OR THE SCRIPT WILL BREAK!
+--//--------------------------------------------------------------------------------------------\\--
+
+
+getgenv().Credit =  {
+	['Credit'] = 'Made By Ticxyylolz#9164/Ticxyy, discord.gg/ticxyy', --dont change this or the script not working
+}
+
+getgenv().Owner =  {
+	['Owner'] = "371extreme843", -- Username Of Owner
+}
+
+getgenv().Settings =  {
+	--// !Main! \\--
+	['Position'] = 'Back', -- Position Of Stand [Back / Left / Right]
+	['CrewID'] = 32570691, -- Must Be In Group For It To Work https://www.roblox.com/groups/32570691/Ticxyy
+	--// ! attack ! \\--
+	['Attack'] = 'Heavy', -- Heavy = Super Punch Light = Spam Punch [Heavy! / Light!]
+	['PredictionValue'] = 0.35, --prediction for attack thing
+	['GunKillPrediction'] = 0.17, --prediction for gun kill
+	['AttackMethod'] = 'under', --[sky / under] dont use under bc its broken
+	['GunMethod'] = 'sky', --[sky / under]  the stand will shootin target like the settings
+	['Resolver'] = false, --[true / false] Turn On Or Off Resolver If Someone Using Anti Lock
+	--// ! antilock ! \\--
+	['SkyAmount'] = 1600, --Sky Velocity
+	--// ! Custom Thing ! \\--
+	['CustomSummon'] = 'summon!', --Custom Summon default is [summon!]
+	['CustomSave'] = 's', --Custom Save if you knocked default is [save!]
+	['CustomName'] = 'Master', --default is [Master]
+	--// ! Misc ! \\--
+	['Performance'] = false, -- [true/false] if false you will see white blank but the performance is soo much better
+	['SummonPose'] = true, -- its gonna Posing When You Summon The Stand.
+	['Posing'] = 'pose1', -- [pose1 / pose2 / pose3] posing mode
+	['ChatCmds'] = true, --[true/false] Chatted When You Use Some Command
+	['AutoMask'] = false, --[true/false] Auto mask when ur stand died
+	['LowGraphics'] = false, -- [true/false] Turns graphics down And Remove Useless Object
+	['MaskMode'] = 'riot', --[surgeon / paintball / skull / pumpkin / hockey / ninja / riot] Mask Mode
+	['Msg'] = 'Yare Yare Daze.', -- When you say /e msg it makes all the alts say that message
+	['FlyModeAnim'] = "glide", --[shazam / bugged shazam / glide / hover] --follow animation
+	['FlyModeSpeed'] = 0.2, --if speed "0" its gonna have no delay and if more than "0.5" its gonna delayed (make it smooth)
+	--//    ! Sounds !     \\--
+	--\\ MUST HAVE BOOMBOX //--
+	['Sounds'] = true, -- [true/false] Sounds when you use some commands like Mimic!
+	['SummonMusicID'] = 'Default', -- Enter A Sound ID Put [Default] If You Would Like The Default Sound
+	['SummonMusic'] = true, -- [true/false]
+	['VanishAppearSound'] = false, -- [On/false]
+	['CustomSong'] = 6853070044 -- Enter A Song ID And Say "Song!"
+}
+
+--//--------------------------------------------------------------------------------------------\\-- Loadstring
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Ticxyylolz/Stand-Script/main/V9.1", true))()

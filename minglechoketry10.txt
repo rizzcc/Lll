@@ -1,0 +1,638 @@
+--// Geliştirilmiş Maid sınıfı
+local Maid = {}
+Maid.__index = Maid
+
+function Maid.new()
+	return setmetatable({
+		_tasks = {}
+	}, Maid)
+end
+
+function Maid:GiveTask(task)
+	if task then
+		table.insert(self._tasks, task)
+	end
+end
+
+function Maid:DoCleaning()
+	for i, task in ipairs(self._tasks) do
+		if typeof(task) == "RBXScriptConnection" then
+			pcall(function() 
+				if task.Connected then
+					task:Disconnect() 
+				end
+			end)
+		elseif typeof(task) == "function" then
+			pcall(task)
+		elseif typeof(task) == "thread" then
+			pcall(function()
+				task.cancel(task)
+			end)
+		elseif typeof(task) == "Instance" then
+			pcall(function()
+				task:Destroy()
+			end)
+		end
+	end
+	table.clear(self._tasks)
+end
+
+function Maid:Destroy()
+	self:DoCleaning()
+end
+
+--// Gelişmiş Mobil GUI Oluşturma
+local function CreateEnhancedMobileGUI()
+	local TweenService = game:GetService("TweenService")
+	
+	local screenGui = Instance.new("ScreenGui")
+	screenGui.Name = "MingleAutoGUI"
+	screenGui.Parent = game:GetService("CoreGui")
+	screenGui.ResetOnSpawn = false
+	
+	-- Ana frame (sürüklenebilir - geliştirilmiş)
+	local mainFrame = Instance.new("Frame")
+	mainFrame.Name = "MainFrame"
+	mainFrame.Size = UDim2.new(0, 160, 0, 70)
+	mainFrame.Position = UDim2.new(0, 10, 0, 100)
+	mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+	mainFrame.BorderSizePixel = 0
+	mainFrame.Active = true
+	mainFrame.Parent = screenGui
+	
+	-- Ana frame gölge efekti
+	local shadowFrame = Instance.new("Frame")
+	shadowFrame.Name = "Shadow"
+	shadowFrame.Size = UDim2.new(1, 6, 1, 6)
+	shadowFrame.Position = UDim2.new(0, -3, 0, -3)
+	shadowFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	shadowFrame.BackgroundTransparency = 0.7
+	shadowFrame.BorderSizePixel = 0
+	shadowFrame.ZIndex = -1
+	shadowFrame.Parent = mainFrame
+	
+	-- Shadow corner
+	local shadowCorner = Instance.new("UICorner")
+	shadowCorner.CornerRadius = UDim.new(0, 12)
+	shadowCorner.Parent = shadowFrame
+	
+	-- Main frame corner
+	local mainCorner = Instance.new("UICorner")
+	mainCorner.CornerRadius = UDim.new(0, 12)
+	mainCorner.Parent = mainFrame
+	
+	-- Gradient background
+	local gradient = Instance.new("UIGradient")
+	gradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(35, 35, 45)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 20, 25))
+	}
+	gradient.Rotation = 45
+	gradient.Parent = mainFrame
+	
+	-- Title label
+	local titleLabel = Instance.new("TextLabel")
+	titleLabel.Name = "TitleLabel"
+	titleLabel.Size = UDim2.new(1, -20, 0, 25)
+	titleLabel.Position = UDim2.new(0, 10, 0, 5)
+	titleLabel.BackgroundTransparency = 1
+	titleLabel.Text = "MINGLE AUTO"
+	titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	titleLabel.TextScaled = true
+	titleLabel.Font = Enum.Font.GothamBold
+	titleLabel.Parent = mainFrame
+	
+	-- Toggle container
+	local toggleContainer = Instance.new("Frame")
+	toggleContainer.Name = "ToggleContainer"
+	toggleContainer.Size = UDim2.new(0, 80, 0, 26)
+	toggleContainer.Position = UDim2.new(0, 10, 0, 35)
+	toggleContainer.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+	toggleContainer.BorderSizePixel = 0
+	toggleContainer.Parent = mainFrame
+	
+	-- Toggle container corner
+	local containerCorner = Instance.new("UICorner")
+	containerCorner.CornerRadius = UDim.new(0, 13)
+	containerCorner.Parent = toggleContainer
+	
+	-- Toggle slider (hareketli part)
+	local toggleSlider = Instance.new("Frame")
+	toggleSlider.Name = "ToggleSlider"
+	toggleSlider.Size = UDim2.new(0, 22, 0, 22)
+	toggleSlider.Position = UDim2.new(0, 2, 0, 2)
+	toggleSlider.BackgroundColor3 = Color3.fromRGB(255, 85, 85)
+	toggleSlider.BorderSizePixel = 0
+	toggleSlider.Parent = toggleContainer
+	
+	-- Slider corner
+	local sliderCorner = Instance.new("UICorner")
+	sliderCorner.CornerRadius = UDim.new(0, 11)
+	sliderCorner.Parent = toggleSlider
+	
+	-- Slider glow effect
+	local sliderGlow = Instance.new("Frame")
+	sliderGlow.Name = "Glow"
+	sliderGlow.Size = UDim2.new(1, 8, 1, 8)
+	sliderGlow.Position = UDim2.new(0, -4, 0, -4)
+	sliderGlow.BackgroundColor3 = Color3.fromRGB(255, 85, 85)
+	sliderGlow.BackgroundTransparency = 0.6
+	sliderGlow.BorderSizePixel = 0
+	sliderGlow.ZIndex = -1
+	sliderGlow.Parent = toggleSlider
+	
+	local glowCorner = Instance.new("UICorner")
+	glowCorner.CornerRadius = UDim.new(0, 15)
+	glowCorner.Parent = sliderGlow
+	
+	-- Toggle button (invisible clickable area)
+	local toggleButton = Instance.new("TextButton")
+	toggleButton.Name = "ToggleButton"
+	toggleButton.Size = UDim2.new(1, 0, 1, 0)
+	toggleButton.Position = UDim2.new(0, 0, 0, 0)
+	toggleButton.BackgroundTransparency = 1
+	toggleButton.Text = ""
+	toggleButton.Parent = toggleContainer
+	
+	-- Status label
+	local statusLabel = Instance.new("TextLabel")
+	statusLabel.Name = "StatusLabel"
+	statusLabel.Size = UDim2.new(0, 50, 0, 18)
+	statusLabel.Position = UDim2.new(1, -55, 0, 37)
+	statusLabel.BackgroundTransparency = 1
+	statusLabel.Text = "OFF"
+	statusLabel.TextColor3 = Color3.fromRGB(255, 85, 85)
+	statusLabel.TextScaled = true
+	statusLabel.Font = Enum.Font.GothamBold
+	statusLabel.Parent = mainFrame
+	
+	-- Particle System
+	local function CreateParticle()
+		local particle = Instance.new("Frame")
+		particle.Size = UDim2.new(0, math.random(2, 4), 0, math.random(2, 4))
+		particle.Position = UDim2.new(math.random(0, 100)/100, 0, math.random(0, 100)/100, 0)
+		particle.BackgroundColor3 = Color3.fromRGB(
+			math.random(100, 255),
+			math.random(100, 255),
+			math.random(200, 255)
+		)
+		particle.BorderSizePixel = 0
+		particle.BackgroundTransparency = 0.3
+		particle.Parent = mainFrame
+		
+		local particleCorner = Instance.new("UICorner")
+		particleCorner.CornerRadius = UDim.new(1, 0)
+		particleCorner.Parent = particle
+		
+		-- Particle animation
+		local moveInfo = TweenInfo.new(
+			math.random(20, 40) / 10,
+			Enum.EasingStyle.Linear,
+			Enum.EasingDirection.InOut,
+			0,
+			false,
+			0
+		)
+		
+		local moveTween = TweenService:Create(particle, moveInfo, {
+			Position = UDim2.new(math.random(-20, 120)/100, 0, math.random(-20, 120)/100, 0),
+			BackgroundTransparency = 1
+		})
+		
+		moveTween:Play()
+		moveTween.Completed:Connect(function()
+			particle:Destroy()
+		end)
+	end
+	
+	-- Particle spawner
+	local particleConnection = task.spawn(function()
+		while mainFrame.Parent do
+			if math.random(1, 100) <= 15 then -- %15 chance
+				CreateParticle()
+			end
+			task.wait(0.1)
+		end
+	end)
+	
+	-- Enhanced Dragging System
+	local dragging = false
+	local dragStart = nil
+	local startPos = nil
+	
+	local function UpdateInput(input)
+		if dragging then
+			local delta = input.Position - dragStart
+			local newPosition = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+				startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+			
+			-- Smooth drag animation
+			local dragTween = TweenService:Create(mainFrame, TweenInfo.new(0.1, Enum.EasingStyle.Quart), {
+				Position = newPosition
+			})
+			dragTween:Play()
+		end
+	end
+	
+	mainFrame.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = mainFrame.Position
+			
+			-- Drag start animation
+			local scaleUpTween = TweenService:Create(mainFrame, TweenInfo.new(0.1, Enum.EasingStyle.Back), {
+				Size = UDim2.new(0, 170, 0, 75)
+			})
+			scaleUpTween:Play()
+		end
+	end)
+	
+	game:GetService("UserInputService").InputChanged:Connect(UpdateInput)
+	
+	game:GetService("UserInputService").InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			if dragging then
+				dragging = false
+				
+				-- Drag end animation
+				local scaleDownTween = TweenService:Create(mainFrame, TweenInfo.new(0.1, Enum.EasingStyle.Back), {
+					Size = UDim2.new(0, 160, 0, 70)
+				})
+				scaleDownTween:Play()
+			end
+		end
+	end)
+	
+	return screenGui, toggleButton, toggleSlider, statusLabel, sliderGlow, toggleContainer
+end
+
+-- Enhanced GUI'yi oluştur
+local gui, toggleButton, toggleSlider, statusLabel, sliderGlow, toggleContainer = CreateEnhancedMobileGUI()
+local isAutoEnabled = false
+local TweenService = game:GetService("TweenService")
+
+-- UIManager'ı güncelle
+local UIManager = {
+	GetToggleValue = function(toggleName)
+		if toggleName == "MinglePowerHoldAuto" or toggleName == "AutoChoke" then
+			return isAutoEnabled
+		end
+		return false
+	end
+}
+
+--// Services
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+--// Mingle Sınıfı (Geliştirilmiş + Dinamik QTE Algılama)
+local Mingle = {}
+Mingle.__index = Mingle
+
+function Mingle.new(UIManager)
+	local self = setmetatable({}, Mingle)
+	self._UIManager = UIManager or UIManager
+	self._Maid = Maid.new()
+	self._isRunning = false
+	self._foundRemotes = {} -- Bulunan RemoteEvent'leri takip et
+	self._scanAttempts = 0 -- Tarama deneme sayısı
+	return self
+end
+
+function Mingle:Start()
+	if self._isRunning then
+		warn("Mingle already running!")
+		return
+	end
+	
+	self._isRunning = true
+	local Client = Players.LocalPlayer
+	local CharacterMaid = Maid.new()
+	self._Maid:GiveTask(CharacterMaid)
+
+	local function OnCharacterAdded(Character)
+		if not Character then return end
+		
+		CharacterMaid:DoCleaning()
+		
+		-- Dinamik QTE Algılama Sistemi
+		local function DetectAndHandleQTE()
+			-- Bilinen RemoteEvent isimlerini kontrol et
+			local knownNames = {
+				"RemoteForQTE", "QTE", "Choke", "Mingle", "Hold", "Press", 
+				"Click", "Button", "Power", "Strength", "Force", "Grab",
+				"Squeeze", "Action", "Event", "Trigger", "Handle"
+			}
+			
+			-- 1. Önce bilinen isimleri ara
+			for _, location in pairs({Character, ReplicatedStorage, workspace}) do
+				for _, obj in pairs(location:GetDescendants()) do
+					if obj:IsA("RemoteEvent") then
+						for _, name in pairs(knownNames) do
+							if obj.Name:find(name) or obj.Name:lower():find(name:lower()) then
+								if not self._foundRemotes[obj] then
+									self._foundRemotes[obj] = true
+									print("Known QTE Remote found:", obj.Name, "in", location.Name)
+									self:HandleQTERemote(obj, CharacterMaid)
+								end
+							end
+						end
+					end
+				end
+			end
+			
+			-- 2. Bilinen remote bulunamazsa, davranış analizi yap
+			if next(self._foundRemotes) == nil then
+				self:AnalyzePotentialQTEs(Character, CharacterMaid)
+			end
+		end
+		
+		-- İlk tarama
+		DetectAndHandleQTE()
+		
+		-- Sürekli yeni RemoteEvent'leri dinle
+		local function OnNewRemoteAdded(obj)
+			if obj:IsA("RemoteEvent") and not self._foundRemotes[obj] then
+				-- Yeni remote eklendiğinde analiz et
+				task.wait(0.1) -- Biraz bekle ki remote hazır olsun
+				self:AnalyzeSingleRemote(obj, CharacterMaid)
+			end
+		end
+		
+		CharacterMaid:GiveTask(Character.DescendantAdded:Connect(OnNewRemoteAdded))
+		CharacterMaid:GiveTask(ReplicatedStorage.DescendantAdded:Connect(OnNewRemoteAdded))
+		CharacterMaid:GiveTask(workspace.DescendantAdded:Connect(OnNewRemoteAdded))
+	end
+
+	-- Player'ın karakterini dinle
+	self._Maid:GiveTask(Client.CharacterAdded:Connect(OnCharacterAdded))
+	if Client.Character then
+		OnCharacterAdded(Client.Character)
+	end
+
+	-- Alternatif yöntem: Belirli RemoteEvent'leri 0.5 saniye arayla tara
+	local scanConnection = task.spawn(function()
+		while self._isRunning do
+			if self._UIManager:GetToggleValue("MinglePowerHoldAuto") then
+				self._scanAttempts = self._scanAttempts + 1
+				
+				-- Her 10 tarama da bir kez daha agresif arama yap
+				if self._scanAttempts % 10 == 0 then
+					self:SmartScan()
+				end
+				
+				-- Bulunan remote'ları tetikle
+				for remote, _ in pairs(self._foundRemotes) do
+					if remote and remote.Parent then
+						pcall(function()
+							remote:FireServer()
+						end)
+					else
+						self._foundRemotes[remote] = nil -- Silinmiş remote'u temizle
+					end
+				end
+			end
+			task.wait(0.5) -- 0.5 saniye bekle
+		end
+	end)
+	
+	self._Maid:GiveTask(scanConnection)
+
+	warn("Mingle Auto Choke feature started!")
+	print("Script is now running - Auto choke enabled!")
+	print("Dynamic QTE detection is active!")
+end
+
+-- QTE Remote'u işleme fonksiyonu
+function Mingle:HandleQTERemote(remote, maid)
+	if not remote or not remote:IsA("RemoteEvent") then return end
+	
+	print("Handling QTE Remote:", remote.Name)
+	
+	maid:GiveTask(task.spawn(function()
+		while remote and remote.Parent and self._isRunning do
+			if self._UIManager:GetToggleValue("MinglePowerHoldAuto") then
+				pcall(function()
+					remote:FireServer()
+				end)
+			end
+			task.wait(0.5)
+		end
+	end))
+end
+
+-- Potansiyel QTE'leri analiz etme
+function Mingle:AnalyzePotentialQTEs(character, maid)
+	print("Analyzing potential QTEs - no known remotes found")
+	
+	-- Tüm RemoteEvent'leri topla ve analiz et
+	local allRemotes = {}
+	
+	for _, location in pairs({character, ReplicatedStorage, workspace}) do
+		for _, obj in pairs(location:GetDescendants()) do
+			if obj:IsA("RemoteEvent") then
+				table.insert(allRemotes, obj)
+			end
+		end
+	end
+	
+	print("Found", #allRemotes, "total RemoteEvents for analysis")
+	
+	-- Her remote'u test et (küçük gecikmeyle)
+	for i, remote in pairs(allRemotes) do
+		task.spawn(function()
+			task.wait(i * 0.1) -- Her remote için farklı gecikme
+			self:AnalyzeSingleRemote(remote, maid)
+		end)
+	end
+end
+
+-- Tek bir remote'u analiz etme
+function Mingle:AnalyzeSingleRemote(remote, maid)
+	if not remote or not remote:IsA("RemoteEvent") or self._foundRemotes[remote] then return end
+	
+	-- Remote'un adından QTE olup olmadığını anlamaya çalış
+	local name = remote.Name:lower()
+	local suspiciousWords = {
+		"power", "hold", "press", "click", "button", "force", "strength",
+		"grip", "squeeze", "grab", "pull", "push", "action", "event",
+		"trigger", "handle", "control", "input", "key", "mouse"
+	}
+	
+	local isSuspicious = false
+	for _, word in pairs(suspiciousWords) do
+		if name:find(word) then
+			isSuspicious = true
+			break
+		end
+	end
+	
+	-- Şüpheli remote'ları ekle ve test et
+	if isSuspicious then
+		self._foundRemotes[remote] = true
+		print("Suspicious QTE Remote detected:", remote.Name)
+		self:HandleQTERemote(remote, maid)
+	else
+		-- Şüpheli değilse bile, lokasyonuna göre test et
+		local parent = remote.Parent
+		if parent and (parent == game.Players.LocalPlayer.Character or parent:IsDescendantOf(game.Players.LocalPlayer.Character)) then
+			print("Testing Character-based Remote:", remote.Name)
+			self._foundRemotes[remote] = true
+			self:HandleQTERemote(remote, maid)
+		end
+	end
+end
+
+-- Akıllı tarama sistemi
+function Mingle:SmartScan()
+	print("Performing smart scan for new QTE systems...")
+	
+	-- Son eklenen RemoteEvent'leri kontrol et
+	local recentRemotes = {}
+	
+	for _, location in pairs({game.Players.LocalPlayer.Character, ReplicatedStorage, workspace}) do
+		if location then
+			for _, obj in pairs(location:GetDescendants()) do
+				if obj:IsA("RemoteEvent") and not self._foundRemotes[obj] then
+					table.insert(recentRemotes, obj)
+				end
+			end
+		end
+	end
+	
+	if #recentRemotes > 0 then
+		print("Found", #recentRemotes, "new RemoteEvents to analyze")
+		for _, remote in pairs(recentRemotes) do
+			self:AnalyzeSingleRemote(remote, self._Maid)
+		end
+	end
+end
+
+function Mingle:Stop()
+	self._isRunning = false
+	self._foundRemotes = {}
+	self._scanAttempts = 0
+	self._Maid:DoCleaning()
+	warn("Mingle Auto Choke feature stopped!")
+end
+
+function Mingle:Destroy()
+	self:Stop()
+end
+
+--// Ana çalıştırma
+local mingle = Mingle.new(UIManager)
+
+-- Enhanced Toggle Animation Function
+local function AnimateToggle(enabled)
+	local targetPosition, targetColor, glowColor, statusText, statusColor
+	
+	if enabled then
+		-- ON state
+		targetPosition = UDim2.new(1, -24, 0, 2)
+		targetColor = Color3.fromRGB(85, 255, 85)
+		glowColor = Color3.fromRGB(85, 255, 85)
+		statusText = "ON"
+		statusColor = Color3.fromRGB(85, 255, 85)
+		toggleContainer.BackgroundColor3 = Color3.fromRGB(30, 80, 30)
+	else
+		-- OFF state
+		targetPosition = UDim2.new(0, 2, 0, 2)
+		targetColor = Color3.fromRGB(255, 85, 85)
+		glowColor = Color3.fromRGB(255, 85, 85)
+		statusText = "OFF"
+		statusColor = Color3.fromRGB(255, 85, 85)
+		toggleContainer.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+	end
+	
+	-- Animate slider movement
+	local moveTween = TweenService:Create(toggleSlider, 
+		TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), 
+		{Position = targetPosition}
+	)
+	
+	-- Animate slider color
+	local colorTween = TweenService:Create(toggleSlider, 
+		TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), 
+		{BackgroundColor3 = targetColor}
+	)
+	
+	-- Animate glow
+	local glowTween = TweenService:Create(sliderGlow, 
+		TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), 
+		{BackgroundColor3 = glowColor}
+	)
+	
+	-- Animate container background
+	local containerTween = TweenService:Create(toggleContainer, 
+		TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), 
+		{BackgroundColor3 = (enabled and Color3.fromRGB(30, 80, 30) or Color3.fromRGB(40, 40, 50))}
+	)
+	
+	-- Animate status label
+	local statusTween = TweenService:Create(statusLabel, 
+		TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), 
+		{TextColor3 = statusColor}
+	)
+	
+	-- Scale animation for feedback
+	local scaleUpTween = TweenService:Create(toggleSlider, 
+		TweenInfo.new(0.1, Enum.EasingStyle.Back, Enum.EasingDirection.Out), 
+		{Size = UDim2.new(0, 26, 0, 26)}
+	)
+	
+	local scaleDownTween = TweenService:Create(toggleSlider, 
+		TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), 
+		{Size = UDim2.new(0, 22, 0, 22)}
+	)
+	
+	-- Play animations
+	moveTween:Play()
+	colorTween:Play()
+	glowTween:Play()
+	containerTween:Play()
+	statusTween:Play()
+	scaleUpTween:Play()
+	
+	statusLabel.Text = statusText
+	
+	scaleUpTween.Completed:Connect(function()
+		scaleDownTween:Play()
+	end)
+end
+
+-- Toggle buton fonksiyonalitesi
+toggleButton.MouseButton1Click:Connect(function()
+	isAutoEnabled = not isAutoEnabled
+	
+	-- Animate toggle
+	AnimateToggle(isAutoEnabled)
+	
+	if isAutoEnabled then
+		if not mingle._isRunning then
+			mingle:Start()
+		end
+		print("Mingle Auto Choke: ENABLED")
+	else
+		if mingle._isRunning then
+			mingle:Stop()
+		end
+		print("Mingle Auto Choke: DISABLED")
+	end
+end)
+
+-- Klavye kısayolu (F1) - opsiyonel
+game:GetService("UserInputService").InputBegan:Connect(function(input)
+	if input.KeyCode == Enum.KeyCode.F1 then
+		toggleButton.MouseButton1Click:Fire() -- GUI butonunu tetikle
+	end
+end)
+
+print("Mingle Auto Choke Script loaded!")
+print("📱 Enhanced Mobile GUI created - Drag to move, tap to toggle")
+print("🎮 PC users can also use F1 to toggle")
+print("🔴 RED = OFF | 🟢 GREEN = ON")
+print("Dynamic QTE Detection: Ready")
+print("Smart Analysis: Ready")

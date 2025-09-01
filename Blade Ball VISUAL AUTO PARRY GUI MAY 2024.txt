@@ -1,0 +1,1 @@
+loadstring(game:HttpGet('https://raw.githubusercontent.com/Tevfn/BladeBall-Script/main/Visual-V2-Script-By-T-e-v-f-n'))()
