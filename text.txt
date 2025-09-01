@@ -1,0 +1,62 @@
+getgenv().silent = {
+    Settings = {
+     Enabled = true,
+     AimPart = "UpperTorso",
+     Prediction = 0.152848,
+     AutoPrediction = {
+      Enabled = true,
+      Type = "Math", -- Normal, Custom, Math
+       ping20_30 = 0.12588,
+       ping30_40 = 0.11911,
+       ping40_50 = 0.12471,
+       ping50_60 = 0.13766,
+       ping60_70 = 0.13731,
+       ping70_80 = 0.13951,
+       ping80_90 = 0.14181,
+       ping90_100 = 0.148,
+       ping100_110 = 0.156,
+       ping110_120 = 0.1567,
+       ping120_130 = 0.1601,
+       ping130_140 = 0.1637,
+       ping140_150 = 0.173,
+       ping150_160 = 0.1714,
+       ping160_170 = 0.1863,
+       ping170_180 = 0.1872,
+       ping180_190 = 0.1848,
+       ping190_200 = 0.1865,
+     },
+    },
+    FOV = {
+     Enabled = true,
+     Size = 40,
+     Filled = false,
+     Thickness = 0.66,
+     Transparency = 0.9,
+     Color = Color3.fromRGB(255,255,255),
+    },
+    Checks = {
+     KO = false, --- removed for now
+     Health = { --unlocks if below the set value.
+      Enabled = false,
+      Value = 5,
+     },
+     Wall = true,
+    },
+    Camlock = {
+     Enabled = true,
+     AimPart = "HumanoidRootPart",
+     AutoPrediction = false,
+     Prediction = {
+      Horizontal = 0.152848,
+      Vertical = 0.135,
+     },
+     Smoothness = 0.1,
+     Shake = {
+      X = 0,
+      Y = 0,
+     },
+    },
+ }
+ 
+
+ loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/971e07c6d49e96e1387cba82cad22179.lua"))()
